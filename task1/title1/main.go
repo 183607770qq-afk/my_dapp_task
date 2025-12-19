@@ -97,3 +97,5 @@ func sendTransaction(client ethclient.Client) {
 	fmt.Printf("sended tx: %s", signedTx.Hash().Hex()) //0x6d3afc0ff3cca16c5733e5bc1eea4c804eab7c01d344a8e795c61bb9f5cb4c1e
 	fmt.Println()
 }
+
+
