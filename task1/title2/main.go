@@ -132,6 +132,65 @@ func waitForReceipt(client *ethclient.Client, txHash common.Hash) (*types.Receip
 		time.Sleep(1 * time.Second)
 	}
 }
+func increment(){
+		client, err := ethclient.Dial("https://sepolia.infura.io/v3/72ee2f483626429ab30c674d52862ef7")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // privateKey, err := crypto.GenerateKey()
+    // privateKeyBytes := crypto.FromECDSA(privateKey)
+    // privateKeyHex := hex.EncodeToString(privateKeyBytes)
+    // fmt.Println("Private Key:", privateKeyHex)
+    privateKey, err := crypto.HexToECDSA("97c2242873584e7a8a5e20456e74dca8a2ca4d9252b8916a9dda8615b607fcd6")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    publicKey := privateKey.Public()
+    publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+    if !ok {
+        log.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
+    }
+
+    fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
+    nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    gasPrice, err := client.SuggestGasPrice(context.Background())
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    chainId, err := client.NetworkID(context.Background())
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainId)
+    if err != nil {
+        log.Fatal(err)
+    }
+    auth.Nonce = big.NewInt(int64(nonce))
+    auth.Value = big.NewInt(0)     // in wei
+    auth.GasLimit = uint64(300000) // in units
+    auth.GasPrice = gasPrice
+
+
+
+
+	instance, err := count.NewCount(common.HexToAddress("0x6fDF97B4A3dcF8CCb5A9EDCDBB69137Cc0638512"), client)
+	if err != nil {
+		log.Fatal(err)
+	}
+	value, err := instance.GetCount(&bind.CallOpts{Context: context.Background()})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("initial count value: %d\n", value.Uint64())
+}
 
 // func main() {
 // 	client, err := ethclient.Dial("https://sepolia.infura.io/v3/72ee2f483626429ab30c674d52862ef7")
