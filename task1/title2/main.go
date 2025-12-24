@@ -24,51 +24,52 @@ const (
 )
 
 func main() {
-	client, err := ethclient.Dial("https://sepolia.infura.io/v3/72ee2f483626429ab30c674d52862ef7")
-	if err != nil {
-		log.Fatal(err)
-	}
-	// deployContract(client)
+	deploy2()
+	// 	client, err := ethclient.Dial("https://sepolia.infura.io/v3/72ee2f483626429ab30c674d52862ef7")
+	// 	if err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// 	deployContract(client)
 
-// 检查节点同步状态
-syncProgress, err := client.SyncProgress(context.Background())
-if err != nil {
-    log.Fatal("获取同步状态失败: ", err)
-}
-if syncProgress != nil {
-    log.Printf("警告：节点正在同步，当前区块：%d / 最新区块：%d\n", syncProgress.CurrentBlock, syncProgress.HighestBlock)
-    // 如果不同步，需要等待或更换节点
-}
+	// // 检查节点同步状态
+	// syncProgress, err := client.SyncProgress(context.Background())
+	// if err != nil {
+	//     log.Fatal("获取同步状态失败: ", err)
+	// }
+	// if syncProgress != nil {
+	//     log.Printf("警告：节点正在同步，当前区块：%d / 最新区块：%d\n", syncProgress.CurrentBlock, syncProgress.HighestBlock)
+	//     // 如果不同步，需要等待或更换节点
+	// }
 
-  // contractAddr := common.HexToAddress("0x26c61e4a28EC6ec78C32cbe1B3Dea457c001DA9E")
-  // contractAddr := common.HexToAddress("0x6e8aa187e78CCF1f5B9e7c2e5C117fB5459b813b")
-  // contractAddr := common.HexToAddress("0xD9A7a44E20f7eb4788Ac0CE89B1AbE73f7BE08ad")
-  contractAddr := common.HexToAddress("0xD8cC5681a32C8E92b12C0D3fbA95633bf5E0c646")
-  fmt.Printf("调用合约地址: %s\n", contractAddr.Hex())
+	// contractAddr := common.HexToAddress("0x26c61e4a28EC6ec78C32cbe1B3Dea457c001DA9E")
+	// contractAddr := common.HexToAddress("0x6e8aa187e78CCF1f5B9e7c2e5C117fB5459b813b")
+	// contractAddr := common.HexToAddress("0xD9A7a44E20f7eb4788Ac0CE89B1AbE73f7BE08ad")
+	//   contractAddr := common.HexToAddress("0xD8cC5681a32C8E92b12C0D3fbA95633bf5E0c646")
+	//   fmt.Printf("调用合约地址: %s\n", contractAddr.Hex())
 
-  code, err := client.CodeAt(context.Background(), contractAddr, nil)
-  if err != nil {
-      log.Fatal("检查合约代码失败: ", err)
-  }
-  if len(code) == 0 {
-      log.Fatal("❌ 该地址没有合约代码！请确认：\n" +
-          "1. 地址是否正确\n" +
-          "2. 是否已部署成功\n" +
-          "3. 是否连接了正确的网络（Sepolia）")
-  }
-  fmt.Printf("✅ 合约代码长度: %d 字节\n", len(code))
+	//   code, err := client.CodeAt(context.Background(), contractAddr, nil)
+	//   if err != nil {
+	//       log.Fatal("检查合约代码失败: ", err)
+	//   }
+	//   if len(code) == 0 {
+	//       log.Fatal("❌ 该地址没有合约代码！请确认：\n" +
+	//           "1. 地址是否正确\n" +
+	//           "2. 是否已部署成功\n" +
+	//           "3. 是否连接了正确的网络（Sepolia）")
+	//   }
+	//   fmt.Printf("✅ 合约代码长度: %d 字节\n", len(code))
 
-	// instance, err := count.NewCount(receipt.ContractAddress, client)
-	instance, err := count.NewCount(contractAddr, client)
-	if err != nil {
-		log.Fatal(err)
-	}
-	instance.Increment(&bind.TransactOpts{Context: context.Background()})
-	value, err := instance.GetCount(&bind.CallOpts{Context: context.Background()})
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("initial count value: %d\n", value.Uint64())
+	// 	// instance, err := count.NewCount(receipt.ContractAddress, client)
+	// 	instance, err := count.NewCount(contractAddr, client)
+	// 	if err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// 	instance.Increment(&bind.TransactOpts{Context: context.Background()})
+	// 	value, err := instance.GetCount(&bind.CallOpts{Context: context.Background()})
+	// 	if err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// 	fmt.Printf("initial count value: %d\n", value.Uint64())
 
 }
 
@@ -113,9 +114,9 @@ func deployContract(client *ethclient.Client) {
 	if err != nil {
 		log.Fatal(err)
 	}
-  if receipt.Status != 1 {
-    log.Fatal("Contract deployment transaction failed! Receipt Status: ", receipt.Status)
-}
+	if receipt.Status != 1 {
+		log.Fatal("Contract deployment transaction failed! Receipt Status: ", receipt.Status)
+	}
 	fmt.Printf("contract deployed at address: %s\n", receipt.ContractAddress.Hex())
 }
 func waitForReceipt(client *ethclient.Client, txHash common.Hash) (*types.Receipt, error) {
@@ -132,54 +133,51 @@ func waitForReceipt(client *ethclient.Client, txHash common.Hash) (*types.Receip
 		time.Sleep(1 * time.Second)
 	}
 }
-func increment(){
-		client, err := ethclient.Dial("https://sepolia.infura.io/v3/72ee2f483626429ab30c674d52862ef7")
-    if err != nil {
-        log.Fatal(err)
-    }
+func increment() {
+	client, err := ethclient.Dial("https://sepolia.infura.io/v3/72ee2f483626429ab30c674d52862ef7")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    // privateKey, err := crypto.GenerateKey()
-    // privateKeyBytes := crypto.FromECDSA(privateKey)
-    // privateKeyHex := hex.EncodeToString(privateKeyBytes)
-    // fmt.Println("Private Key:", privateKeyHex)
-    privateKey, err := crypto.HexToECDSA("97c2242873584e7a8a5e20456e74dca8a2ca4d9252b8916a9dda8615b607fcd6")
-    if err != nil {
-        log.Fatal(err)
-    }
+	// privateKey, err := crypto.GenerateKey()
+	// privateKeyBytes := crypto.FromECDSA(privateKey)
+	// privateKeyHex := hex.EncodeToString(privateKeyBytes)
+	// fmt.Println("Private Key:", privateKeyHex)
+	privateKey, err := crypto.HexToECDSA("97c2242873584e7a8a5e20456e74dca8a2ca4d9252b8916a9dda8615b607fcd6")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    publicKey := privateKey.Public()
-    publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
-    if !ok {
-        log.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
-    }
+	publicKey := privateKey.Public()
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+	if !ok {
+		log.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
+	}
 
-    fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
-    nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
-    if err != nil {
-        log.Fatal(err)
-    }
+	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
+	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    gasPrice, err := client.SuggestGasPrice(context.Background())
-    if err != nil {
-        log.Fatal(err)
-    }
+	gasPrice, err := client.SuggestGasPrice(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    chainId, err := client.NetworkID(context.Background())
-    if err != nil {
-        log.Fatal(err)
-    }
+	chainId, err := client.NetworkID(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainId)
-    if err != nil {
-        log.Fatal(err)
-    }
-    auth.Nonce = big.NewInt(int64(nonce))
-    auth.Value = big.NewInt(0)     // in wei
-    auth.GasLimit = uint64(300000) // in units
-    auth.GasPrice = gasPrice
-
-
-
+	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	auth.Nonce = big.NewInt(int64(nonce))
+	auth.Value = big.NewInt(0)     // in wei
+	auth.GasLimit = uint64(300000) // in units
+	auth.GasPrice = gasPrice
 
 	instance, err := count.NewCount(common.HexToAddress("0x6fDF97B4A3dcF8CCb5A9EDCDBB69137Cc0638512"), client)
 	if err != nil {
@@ -192,70 +190,83 @@ func increment(){
 	fmt.Printf("initial count value: %d\n", value.Uint64())
 }
 
-// func main() {
-// 	client, err := ethclient.Dial("https://sepolia.infura.io/v3/72ee2f483626429ab30c674d52862ef7")
-//     if err != nil {
-//         log.Fatal(err)
-//     }
+func deploy2() {
+	client, err := ethclient.Dial("https://sepolia.infura.io/v3/72ee2f483626429ab30c674d52862ef7")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-//     // privateKey, err := crypto.GenerateKey()
-//     // privateKeyBytes := crypto.FromECDSA(privateKey)
-//     // privateKeyHex := hex.EncodeToString(privateKeyBytes)
-//     // fmt.Println("Private Key:", privateKeyHex)
-//     privateKey, err := crypto.HexToECDSA("97c2242873584e7a8a5e20456e74dca8a2ca4d9252b8916a9dda8615b607fcd6")
-//     if err != nil {
-//         log.Fatal(err)
-//     }
+	// privateKey, err := crypto.GenerateKey()
+	// privateKeyBytes := crypto.FromECDSA(privateKey)
+	// privateKeyHex := hex.EncodeToString(privateKeyBytes)
+	// fmt.Println("Private Key:", privateKeyHex)
+	privateKey, err := crypto.HexToECDSA("97c2242873584e7a8a5e20456e74dca8a2ca4d9252b8916a9dda8615b607fcd6")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-//     publicKey := privateKey.Public()
-//     publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
-//     if !ok {
-//         log.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
-//     }
+	publicKey := privateKey.Public()
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+	if !ok {
+		log.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
+	}
 
-//     fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
-//     nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
-//     if err != nil {
-//         log.Fatal(err)
-//     }
+	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
+	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-//     gasPrice, err := client.SuggestGasPrice(context.Background())
-//     if err != nil {
-//         log.Fatal(err)
-//     }
+	gasPrice, err := client.SuggestGasPrice(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
 
-//     chainId, err := client.NetworkID(context.Background())
-//     if err != nil {
-//         log.Fatal(err)
-//     }
+	chainId, err := client.NetworkID(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
 
-//     auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainId)
-//     if err != nil {
-//         log.Fatal(err)
-//     }
-//     auth.Nonce = big.NewInt(int64(nonce))
-//     auth.Value = big.NewInt(0)     // in wei
-//     auth.GasLimit = uint64(300000) // in units
-//     auth.GasPrice = gasPrice
+	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	auth.Nonce = big.NewInt(int64(nonce))
+	auth.Value = big.NewInt(0)     // in wei
+	auth.GasLimit = uint64(300000) // in units
+	auth.GasPrice = gasPrice
 
-//     // input := "1.0"
-//     address, tx, instance, err := count.DeployCount(auth, client)
-//     if err != nil {
-//         log.Fatal(err)
-//     }
+	// input := "1.0"
+	address, tx, instance, err := count.DeployCount(auth, client)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-//     fmt.Println(address.Hex())
-//     fmt.Println(tx.Hash().Hex())
+	fmt.Println(address.Hex())
+	fmt.Println(tx.Hash().Hex())
 
-//     // _ = instance
-//     	// instance, err := count.NewCount(receipt.ContractAddress, client)
-// 	// instance, err := count.NewCount(contractAddr, client)
-// 	// if err != nil {
-// 	// 	log.Fatal(err)
-// 	// }
-// 	value, err := instance.GetCount(&bind.CallOpts{Context: context.Background()})
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	fmt.Printf("initial count value: %d\n", value.Uint64())
-// }
+	// _ = instance
+	// instance, err := count.NewCount(receipt.ContractAddress, client)
+	// instance, err := count.NewCount(address, client)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	 ctx := context.Background()
+	receipt, err := bind.WaitMined(ctx, client, tx)
+    if err != nil {
+        log.Fatal("等待交易确认失败:", err)
+    }
+	if receipt.Status != 1 {
+        log.Fatal("❌ 交易失败，合约未部署")
+    }
+	fmt.Printf("✅ 交易已确认！区块: %d\n", receipt.BlockNumber)
+    fmt.Println("⏳ 给节点一些时间同步...")
+    time.Sleep(3 * time.Second) // 额外等待确保节点同步
+
+
+	value, err := instance.GetCount(&bind.CallOpts{Context: context.Background()})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("initial count value: %d\n", value.Uint64())
+}
